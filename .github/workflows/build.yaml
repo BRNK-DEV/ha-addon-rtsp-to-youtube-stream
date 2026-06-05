@@ -1,0 +1,35 @@
+name: Build Home Assistant Add-on
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+  schedule:
+    - cron: "0 2 * * 0"
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        arch: [aarch64, amd64, armv7]
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+
+      - name: Build Docker image
+        uses: docker/build-push-action@v4
+        with:
+          context: ./rtsp_to_youtube
+          file: ./rtsp_to_youtube/Dockerfile
+          build-args: |
+            BUILD_FROM=ghcr.io/home-assistant/${{ matrix.arch }}-base:latest
+          tags: rtsp-to-youtube:${{ matrix.arch }}
+          load: true
+
+      - name: Test image
+        run: docker run --rm rtsp-to-youtube:${{ matrix.arch }} sh -c "ffmpeg -version | head -1"
