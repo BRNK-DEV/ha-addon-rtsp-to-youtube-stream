@@ -7,31 +7,16 @@ boot: auto
 arch:
   - aarch64
   - amd64
-  - armv7
 host_network: true
 options:
   rtsp_url: ""
   youtube_key: ""
   bitrate: "2500k"
-  rtsp_timeout: 10
-  reconnect_delay: 10
+  rtsp_timeout: "10"
+  reconnect_delay: "10"
 schema:
-  rtsp_url: 
-    type: str
-    required: true
-  youtube_key: 
-    type: password
-    required: true
-  bitrate: 
-    type: str
-    default: "2500k"
-  rtsp_timeout:
-    type: integer
-    default: 10
-    minimum: 5
-    maximum: 120
-  reconnect_delay:
-    type: integer
-    default: 10
-    minimum: 5
-    maximum: 300
+  rtsp_url: str
+  youtube_key: password
+  bitrate: str
+  rtsp_timeout: str
+  reconnect_delay: str
