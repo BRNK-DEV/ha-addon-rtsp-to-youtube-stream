@@ -1,5 +1,5 @@
 name: RTSP to YouTube Stream
-version: "2.1.1"
+version: "2.1.2"
 slug: rtsp_to_youtube
 description: Stream an RTSP camera directly to YouTube Live with auto-restart and health monitoring
 startup: services
@@ -16,8 +16,12 @@ options:
   rtsp_timeout: 10
   reconnect_delay: 10
 schema:
-  rtsp_url: str
-  youtube_key: password
+  rtsp_url: 
+    type: str
+    required: true
+  youtube_key: 
+    type: password
+    required: true
   bitrate: 
     type: str
     default: "2500k"
