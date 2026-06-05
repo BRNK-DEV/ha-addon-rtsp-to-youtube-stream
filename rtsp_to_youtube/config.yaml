@@ -1,5 +1,5 @@
 name: RTSP to YouTube Stream
-version: "2.1.0"
+version: "2.1.1"
 slug: rtsp_to_youtube
 description: Stream an RTSP camera directly to YouTube Live with auto-restart and health monitoring
 startup: services
@@ -12,7 +12,7 @@ host_network: true
 options:
   rtsp_url: ""
   youtube_key: ""
-  bitrate: 2500k
+  bitrate: "2500k"
   rtsp_timeout: 10
   reconnect_delay: 10
 schema:
@@ -21,16 +21,13 @@ schema:
   bitrate: 
     type: str
     default: "2500k"
-    description: "FFmpeg video bitrate (e.g., 1500k, 2500k, 5000k)"
   rtsp_timeout:
     type: integer
     default: 10
     minimum: 5
     maximum: 120
-    description: "RTSP connection timeout in seconds"
   reconnect_delay:
     type: integer
     default: 10
     minimum: 5
     maximum: 300
-    description: "Delay before reconnecting after disconnect (seconds)"
