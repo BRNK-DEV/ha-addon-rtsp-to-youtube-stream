@@ -1,0 +1,17 @@
+name: RTSP to YouTube Stream
+version: "1.0.0"
+slug: rtsp_to_youtube
+description: Stream an RTSP camera directly to YouTube Live
+startup: services
+boot: auto
+arch:
+  - aarch64
+  - amd64
+  - armv7
+host_network: true
+options:
+  rtsp_url: ""
+  youtube_key: ""
+schema:
+  rtsp_url: str
+  youtube_key: password
