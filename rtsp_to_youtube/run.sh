@@ -92,7 +92,7 @@ while true; do
     -f lavfi -i "anullsrc=channel_layout=stereo:sample_rate=44100" \
     -map 0:v:0 \
     -map 1:a:0 \
-    -c:v libx264 \
+    -c:v copy \
     -b:v "${BITRATE}" \
     -preset ultrafast \
     -c:a aac \
