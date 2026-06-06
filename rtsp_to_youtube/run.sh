@@ -34,7 +34,7 @@ if [ "$USE_BASHIO" = true ]; then
   RTSP_URL=$(bashio::config 'rtsp_url' 2>/dev/null || echo "")
   YOUTUBE_KEY=$(bashio::config 'youtube_key' 2>/dev/null || echo "")
   BITRATE=$(bashio::config 'bitrate' 2>/dev/null || echo "2500k")
-  RTSP_TIMEOUT=$(bashio::config 'rtsp_timeout' 2>/dev/null || echo "10")
+  RTSP_TIMEOUT=$(bashio::config 'rtsp_timeout' 2>/dev/null || echo "120")
   RECONNECT_DELAY=$(bashio::config 'reconnect_delay' 2>/dev/null || echo "10")
 else
   RTSP_URL=${RTSP_URL:-""}
