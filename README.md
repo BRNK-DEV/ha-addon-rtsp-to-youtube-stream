@@ -40,10 +40,10 @@ A Home Assistant add-on that streams RTSP camera feeds directly to YouTube Live 
   - Examples: `1500k` (low), `2500k` (medium), `5000k` (high)
   - Adjust based on your network and camera resolution
   
-- **rtsp_timeout**: RTSP connection timeout in seconds (default: `10`, range: 5-120)
-  - Increase if your camera is slow to respond
+- **rtsp_timeout**: RTSP connection timeout in seconds (default: `15`, range: 5-120)
+  - Kept low by default so a stalled/frozen camera connection is detected quickly and retried, rather than blocking for minutes before the reconnect loop even starts. Increase if your camera is slow to respond and you see false-positive reconnects.
   
-- **reconnect_delay**: Delay before reconnecting after disconnect (default: `10`, range: 5-300)
+- **reconnect_delay**: Delay before reconnecting after disconnect (default: `5`, range: 5-300)
   - With health monitoring: auto-increases up to 2 minutes on repeated failures
 
 ### Example Configuration
@@ -52,8 +52,8 @@ A Home Assistant add-on that streams RTSP camera feeds directly to YouTube Live 
 rtsp_url: rtsp://admin:PASSWORD@192.168.1.64:554/Streaming/Channels/101
 youtube_key: hsd4-e8uj-wx6a-24aq-881z
 bitrate: 2500k
-rtsp_timeout: 10
-reconnect_delay: 10
+rtsp_timeout: 15
+reconnect_delay: 5
 ```
 
 ## How It Works
@@ -76,6 +76,12 @@ reconnect_delay: 10
    - **Quick disconnect** (< 5 seconds): Uses exponential backoff
    - **Max backoff**: 2 minutes to prevent connection storms
    - **Auto-recovery**: Attempts reconnect indefinitely with health monitoring
+
+## About Interruptions and YouTube Broadcasts
+
+This add-on retries the RTSP→YouTube connection indefinitely, but YouTube itself will end a live broadcast after enough time passes without incoming data — that timeout is undocumented and not configurable, so no add-on setting can guarantee a specific grace period (e.g. 10 minutes). The `rtsp_timeout`/`reconnect_delay` defaults above are kept low specifically to reconnect as fast as possible and maximize the chance a brief interruption resolves before YouTube ends the broadcast.
+
+For interruptions that do end the broadcast (including after a nightly reboot), enable **auto-start** and **auto-stop** on a persistent/reusable stream key in YouTube Studio (Go Live → Stream → Advanced settings). With that enabled, YouTube automatically starts a new broadcast as soon as this add-on reconnects — no manual restart needed. Note this does mean a new interruption produces a separate broadcast/video rather than one continuous recording.
 
 ## Supported Architectures
 

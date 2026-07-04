@@ -1,6 +1,8 @@
 #!/bin/bash
 
-set -e
+# Intentionally no `set -e`: ffmpeg exits non-zero on every disconnect, and
+# errexit would kill this script (and the reconnect loop below) on the very
+# first drop instead of letting it retry.
 
 # Colors for output
 RED='\033[0;31m'
@@ -34,14 +36,14 @@ if [ "$USE_BASHIO" = true ]; then
   RTSP_URL=$(bashio::config 'rtsp_url' 2>/dev/null || echo "")
   YOUTUBE_KEY=$(bashio::config 'youtube_key' 2>/dev/null || echo "")
   BITRATE=$(bashio::config 'bitrate' 2>/dev/null || echo "2500k")
-  RTSP_TIMEOUT=$(bashio::config 'rtsp_timeout' 2>/dev/null || echo "120")
-  RECONNECT_DELAY=$(bashio::config 'reconnect_delay' 2>/dev/null || echo "10")
+  RTSP_TIMEOUT=$(bashio::config 'rtsp_timeout' 2>/dev/null || echo "15")
+  RECONNECT_DELAY=$(bashio::config 'reconnect_delay' 2>/dev/null || echo "5")
 else
   RTSP_URL=${RTSP_URL:-""}
   YOUTUBE_KEY=${YOUTUBE_KEY:-""}
   BITRATE=${BITRATE:-"2500k"}
-  RTSP_TIMEOUT=${RTSP_TIMEOUT:-"10"}
-  RECONNECT_DELAY=${RECONNECT_DELAY:-"10"}
+  RTSP_TIMEOUT=${RTSP_TIMEOUT:-"15"}
+  RECONNECT_DELAY=${RECONNECT_DELAY:-"5"}
 fi
 
 # Validate configuration
@@ -59,8 +61,8 @@ fi
 if [ -z "$BITRATE" ] || [ -z "$RTSP_TIMEOUT" ] || [ -z "$RECONNECT_DELAY" ]; then
   log_warning "Using default settings for missing configuration values"
   BITRATE=${BITRATE:-"2500k"}
-  RTSP_TIMEOUT=${RTSP_TIMEOUT:-"10"}
-  RECONNECT_DELAY=${RECONNECT_DELAY:-"10"}
+  RTSP_TIMEOUT=${RTSP_TIMEOUT:-"15"}
+  RECONNECT_DELAY=${RECONNECT_DELAY:-"5"}
 fi
 
 log_info "=========================================="
