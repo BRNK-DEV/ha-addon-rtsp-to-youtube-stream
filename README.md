@@ -98,6 +98,10 @@ For interruptions that do end the broadcast (including after a nightly reboot), 
 
 ## Troubleshooting
 
+**Diagnosing a past interruption?**
+- The add-on's Log tab (and the container's own stdout) only goes back to the last time the container was created — a reboot, update, or manual restart wipes it, which makes diagnosing overnight interruptions hard.
+- The script also mirrors everything to `/data/rtsp_to_youtube.log`, which HA persists across container restarts/recreates. Read it via the SSH/Terminal add-on with `docker exec addon_<hash>_rtsp_to_youtube cat /data/rtsp_to_youtube.log` (find the exact container name with `docker ps`).
+
 **Stream not starting?**
 - Verify your RTSP URL is correct and accessible
 - Check your YouTube stream key is valid

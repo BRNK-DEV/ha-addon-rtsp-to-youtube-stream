@@ -1,5 +1,5 @@
 name: RTSP to YouTube Stream
-version: "2.2.1"
+version: "2.2.2"
 slug: rtsp_to_youtube
 description: Stream an RTSP camera directly to YouTube Live with auto-restart and health monitoring
 startup: services
