@@ -7,10 +7,13 @@
 # Mirror all output to a log file under /data, which HA persists across
 # container restarts/recreates/updates - the container's own stdout does not
 # survive those, which previously made post-incident debugging impossible.
+# Keep the log small: it lives on the SD card, and constant writes wear it out.
+# Trim by bytes, not lines - ffmpeg progress output uses \r, so a "line" can be
+# the whole file.
 LOG_FILE="/data/rtsp_to_youtube.log"
-MAX_LOG_SIZE=$((5 * 1024 * 1024))
+MAX_LOG_SIZE=$((1 * 1024 * 1024))
 if [ -f "$LOG_FILE" ] && [ "$(wc -c < "$LOG_FILE" 2>/dev/null || echo 0)" -gt "$MAX_LOG_SIZE" ]; then
-  tail -n 2000 "$LOG_FILE" > "${LOG_FILE}.tmp" && mv "${LOG_FILE}.tmp" "$LOG_FILE"
+  tail -c $((MAX_LOG_SIZE / 2)) "$LOG_FILE" > "${LOG_FILE}.tmp" && mv "${LOG_FILE}.tmp" "$LOG_FILE"
 fi
 exec > >(tee -a "$LOG_FILE") 2>&1
 
@@ -94,8 +97,12 @@ while true; do
   # Store start time for health check
   START_TIME=$(date +%s)
   
-  # Run FFmpeg with production-grade settings
+  # Run FFmpeg with production-grade settings.
+  # -nostats/-loglevel warning: no progress line twice a second (that filled
+  # the SD card log with 133 MB in 6 days); warnings and errors still show.
   ffmpeg \
+    -nostats \
+    -loglevel warning \
     -rtsp_transport tcp \
     -timeout $((RTSP_TIMEOUT * 1000000)) \
     -use_wallclock_as_timestamps 1 \
